@@ -1,5 +1,6 @@
 require 'rails'
 require 'active_support'
+require 'rails-html-sanitizer'
 
 module PrototypeRails
   class Engine < Rails::Engine

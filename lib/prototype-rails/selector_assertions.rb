@@ -2,13 +2,13 @@ require 'active_support/core_ext/module/aliasing'
 require 'action_view/vendor/html-scanner'
 require 'action_dispatch/testing/assertions'
 require 'action_dispatch/testing/assertions/selector'
-
+require 'rails/dom/testing/assertions/selector_assertions'
 #--
 # Copyright (c) 2006 Assaf Arkin (http://labnotes.org)
 # Under MIT and/or CC By license.
 #++
 
-ActionDispatch::Assertions::SelectorAssertions.module_eval do
+Rails::Dom::Testing::Assertions::SelectorAssertions.module_eval do
   # Selects content from the RJS response.
   #
   # === Narrowing down
@@ -174,7 +174,7 @@ ActionDispatch::Assertions::SelectorAssertions.module_eval do
   def response_from_page_with_rjs
     content_type = @response.content_type
 
-    if content_type && Mime::JS =~ content_type
+    if content_type && Mime[:js] =~ content_type
       body = @response.body.dup
       root = HTML::Node.new(nil)
 
@@ -193,7 +193,9 @@ ActionDispatch::Assertions::SelectorAssertions.module_eval do
       response_from_page_without_rjs
     end
   end
-  alias_method_chain :response_from_page, :rjs
+
+  alias_method :rjs, :response_from_page_with_rjs
+  alias_method :response_from_page_without_rjs, :rjs
 
   # Unescapes a RJS string.
   def unescape_rjs(rjs_string)
