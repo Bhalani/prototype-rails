@@ -7,8 +7,7 @@ require 'rails/dom/testing/assertions/selector_assertions'
 # Under MIT and/or CC By license.
 #++
 
-module PrototypeRails
-  module SelectorAssertions
+Rails::Dom::Testing::Assertions::SelectorAssertions.module_eval do
   # Selects content from the RJS response.
   #
   # === Narrowing down
@@ -174,7 +173,7 @@ module PrototypeRails
   def response_from_page_with_rjs
     content_type = @response.content_type
 
-    if content_type && Mime::JS =~ content_type
+    if content_type && Mime[:js] =~ content_type
       body = @response.body.dup
       root = HTML::Node.new(nil)
 
@@ -194,6 +193,9 @@ module PrototypeRails
     end
   end
 
+  alias_method :rjs, :response_from_page_with_rjs
+  alias_method :response_from_page_without_rjs, :rjs
+
   # Unescapes a RJS string.
   def unescape_rjs(rjs_string)
     # RJS encodes double quotes and line breaks.
@@ -206,5 +208,4 @@ module PrototypeRails
     unescaped.gsub!(RJS_PATTERN_UNICODE_ESCAPED_CHAR) {|u| [$1.hex].pack('U*')}
     unescaped
   end
-end
 end
